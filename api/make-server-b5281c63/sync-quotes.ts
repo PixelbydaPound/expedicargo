@@ -1,4 +1,4 @@
-import { sql } from "../_lib/neon";
+import { getSql } from "../_lib/neon";
 
 function json(res: any, status: number, body: any) {
   res.status(status).setHeader("Content-Type", "application/json").end(JSON.stringify(body));
@@ -6,6 +6,7 @@ function json(res: any, status: number, body: any) {
 
 export default async function handler(req: any, res: any) {
   try {
+    const sql = getSql();
     if (req.method !== "POST") {
       json(res, 405, { error: "Method not allowed" });
       return;

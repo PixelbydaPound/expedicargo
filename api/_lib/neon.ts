@@ -6,5 +6,7 @@ function requireEnv(name: string): string {
   return v;
 }
 
-export const sql = neon(requireEnv("DATABASE_URL"));
+export function getSql() {
+  return neon(requireEnv("DATABASE_URL"));
+}
 

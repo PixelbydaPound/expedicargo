@@ -1,4 +1,4 @@
-import { sql } from "../_lib/neon";
+import { getSql } from "../_lib/neon";
 import { sendQuoteEmails } from "../_lib/resend";
 
 function json(res: any, status: number, body: any) {
@@ -12,6 +12,7 @@ function pickQuoteId(body: any): string {
 
 export default async function handler(req: any, res: any) {
   try {
+    const sql = getSql();
     if (req.method === "GET") {
       const rows =
         await sql`select id, created_at, data from quotes order by created_at desc limit 200`;
