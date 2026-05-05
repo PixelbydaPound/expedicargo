@@ -3,7 +3,6 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card } from './ui/card';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
 
 export function EmailTest() {
   const [email, setEmail] = useState('');
@@ -37,12 +36,11 @@ export function EmailTest() {
       };
 
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-b5281c63/send-quote-emails`,
+        `/api/make-server-b5281c63/send-quote-emails`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify(testQuoteData),
         }

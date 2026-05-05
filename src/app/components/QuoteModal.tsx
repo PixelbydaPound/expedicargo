@@ -11,7 +11,7 @@ import { CheckCircle2, AlertCircle, Lock, Info, Package, Ship, Plane, HelpCircle
 import { useState, useEffect } from "react";
 import { useLanguage } from "../contexts/LanguageContext";
 import confetti from "canvas-confetti";
-import { projectId, publicAnonKey } from "../utils/supabase/info";
+// Supabase Edge Functions were replaced with Vercel API routes.
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { LocationSelector } from "./LocationSelector";
@@ -352,11 +352,10 @@ export function QuoteModal({ open, onOpenChange }: QuoteModalProps) {
       }
 
       // Send to Supabase (using converted metric values and same data structure)
-      const supabaseResponse = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-b5281c63/quotes`, {
+      const supabaseResponse = await fetch(`/api/make-server-b5281c63/quotes`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${publicAnonKey}`
         },
         body: JSON.stringify({
           quote_id: quoteId,

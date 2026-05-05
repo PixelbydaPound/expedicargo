@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { CheckCircle2, XCircle, Loader2, Send } from "lucide-react";
-import { projectId, publicAnonKey } from "../utils/supabase/info";
 
 export function WebhookTester() {
   const [loading, setLoading] = useState(false);
@@ -16,11 +15,10 @@ export function WebhookTester() {
 
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-b5281c63/test-webhook`,
+        `/api/make-server-b5281c63/test-webhook`,
         {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
             "Content-Type": "application/json",
           },
         }

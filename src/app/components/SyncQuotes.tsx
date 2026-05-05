@@ -1,6 +1,5 @@
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { projectId, publicAnonKey } from "../utils/supabase/info";
 import { RefreshCw, CheckCircle2, XCircle, Database, Eye, TestTube, AlertCircle } from "lucide-react";
 
 export function SyncQuotes() {
@@ -27,12 +26,11 @@ export function SyncQuotes() {
 
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-b5281c63/sync-quotes`,
+        `/api/make-server-b5281c63/sync-quotes`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${publicAnonKey}`
           }
         }
       );
@@ -56,11 +54,9 @@ export function SyncQuotes() {
     setIsViewing(true);
     try {
       const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-b5281c63/quotes`,
+        `/api/make-server-b5281c63/quotes`,
         {
-          headers: {
-            "Authorization": `Bearer ${publicAnonKey}`
-          }
+          headers: {}
         }
       );
 
