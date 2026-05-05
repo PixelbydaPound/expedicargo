@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { Pool } from "pg";
 
 function requireEnv(name: string): string {
   const v = process.env[name];
@@ -6,7 +6,16 @@ function requireEnv(name: string): string {
   return v;
 }
 
-export function getSql() {
-  return neon(requireEnv("DATABASE_URL"));
+let pool: Pool | null = null;
+
+export function getPool() {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: requireEnv("DATABASE_URL"),
+      ssl: { rejectUnauthorized: false },
+      max: 5,
+    });
+  }
+  return pool;
 }
 

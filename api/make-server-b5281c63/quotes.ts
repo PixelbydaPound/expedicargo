@@ -1,4 +1,4 @@
-import { getSql } from "../_lib/neon";
+import { getPool } from "../_lib/neon";
 import { sendQuoteEmails } from "../_lib/resend";
 
 function json(res: any, status: number, body: any) {
@@ -12,10 +12,11 @@ function pickQuoteId(body: any): string {
 
 export default async function handler(req: any, res: any) {
   try {
-    const sql = getSql();
+    const pool = getPool();
     if (req.method === "GET") {
-      const rows =
-        await sql`select id, created_at, data from quotes order by created_at desc limit 200`;
+      const { rows } = await pool.query(
+        "select id, created_at, data from quotes order by created_at desc limit 200"
+      );
       json(res, 200, { status: "ok", data: rows });
       return;
     }
@@ -29,8 +30,11 @@ export default async function handler(req: any, res: any) {
     const quote_id = pickQuoteId(body);
 
     const payload = JSON.stringify(body);
-    const [row] =
-      await sql`insert into quotes (data) values (${payload}::jsonb) returning id, created_at`;
+    const inserted = await pool.query(
+      "insert into quotes (data) values ($1::jsonb) returning id, created_at",
+      [payload]
+    );
+    const row = inserted.rows[0];
 
     // fire-and-forget emails
     sendQuoteEmails({ ...body, quote_id }).catch((err) => {

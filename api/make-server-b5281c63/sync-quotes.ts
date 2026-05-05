@@ -1,4 +1,4 @@
-import { getSql } from "../_lib/neon";
+import { getPool } from "../_lib/neon";
 
 function json(res: any, status: number, body: any) {
   res.status(status).setHeader("Content-Type", "application/json").end(JSON.stringify(body));
@@ -6,7 +6,7 @@ function json(res: any, status: number, body: any) {
 
 export default async function handler(req: any, res: any) {
   try {
-    const sql = getSql();
+    const pool = getPool();
     if (req.method !== "POST") {
       json(res, 405, { error: "Method not allowed" });
       return;
@@ -18,8 +18,10 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const quotes =
-      await sql`select id, created_at, data from quotes order by created_at desc limit 50`;
+    const result = await pool.query(
+      "select id, created_at, data from quotes order by created_at desc limit 50"
+    );
+    const quotes = result.rows;
 
     let successCount = 0;
     let failCount = 0;
