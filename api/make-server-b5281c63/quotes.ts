@@ -3,7 +3,9 @@ import { sendQuoteEmails } from "../_lib/resend";
 
 function json(res: any, status: number, body: unknown) {
   try {
-    const s = JSON.stringify(body);
+    const s = JSON.stringify(body, (_key, value) =>
+      typeof value === "bigint" ? value.toString() : value
+    );
     res.status(status).setHeader("Content-Type", "application/json").end(s);
   } catch {
     res
@@ -74,7 +76,11 @@ export default async function handler(req: any, res: any) {
 
     json(res, 201, {
       status: "ok",
-      data: { id: row?.id, created_at: row?.created_at, quote_id },
+      data: {
+        id: row?.id != null ? String(row.id) : undefined,
+        created_at: row?.created_at,
+        quote_id,
+      },
       email,
       ...(email_error ? { email_error } : {}),
     });
