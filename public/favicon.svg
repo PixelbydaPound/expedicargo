@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Expedicargo">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
+  <path fill="#ffffff" fill-opacity="0.95" d="M7 11h18v10H7V11zm2 2v6h14v-6H9z"/>
+  <path fill="#ffffff" fill-opacity="0.45" d="M11 15h10v1.5H11V15zm0 3h10v1.5H11V18z"/>
+</svg>
