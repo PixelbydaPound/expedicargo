@@ -27,8 +27,9 @@ export default async function handler(req: any, res: any) {
     const body = req.body && typeof req.body === "object" ? req.body : {};
     const quote_id = pickQuoteId(body);
 
+    const payload = JSON.stringify(body);
     const [row] =
-      await sql`insert into quotes (data) values (${body}::jsonb) returning id, created_at`;
+      await sql`insert into quotes (data) values (${payload}::jsonb) returning id, created_at`;
 
     // fire-and-forget emails
     sendQuoteEmails({ ...body, quote_id }).catch((err) => {
