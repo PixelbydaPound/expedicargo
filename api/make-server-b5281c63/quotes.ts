@@ -1,8 +1,31 @@
 import { getSql } from "../_lib/neon";
 import { sendQuoteEmails } from "../_lib/resend";
 
-function json(res: any, status: number, body: any) {
-  res.status(status).setHeader("Content-Type", "application/json").end(JSON.stringify(body));
+function json(res: any, status: number, body: unknown) {
+  try {
+    const s = JSON.stringify(body);
+    res.status(status).setHeader("Content-Type", "application/json").end(s);
+  } catch {
+    res
+      .status(500)
+      .setHeader("Content-Type", "application/json")
+      .end(JSON.stringify({ error: "Response serialization failed" }));
+  }
+}
+
+/** Vercel sometimes delivers JSON as a string; normalize before reading email / fields. */
+function parseBody(req: any): Record<string, unknown> {
+  const b = req.body;
+  if (b && typeof b === "object" && !Buffer.isBuffer(b)) return b as Record<string, unknown>;
+  if (typeof b === "string") {
+    try {
+      const o = JSON.parse(b) as unknown;
+      return o && typeof o === "object" ? (o as Record<string, unknown>) : {};
+    } catch {
+      return {};
+    }
+  }
+  return {};
 }
 
 function pickQuoteId(body: any): string {
@@ -26,14 +49,15 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const body = parseBody(req);
     const quote_id = pickQuoteId(body);
 
     const payload = JSON.stringify(body);
-    const insertedRows = await sql`
-      insert into quotes (data) values (${payload}::jsonb)
-      returning id, created_at
-    `;
+    // Use sql.query + $1 — tagged-template `${x}::jsonb` can break Neon’s SQL parser.
+    const insertedRows = await sql.query(
+      "insert into quotes (data) values ($1::jsonb) returning id, created_at",
+      [payload]
+    );
     const row = insertedRows[0];
 
     // Must await: Vercel freezes the function after the response is sent, so
