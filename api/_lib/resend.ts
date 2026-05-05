@@ -51,7 +51,7 @@ function renderQuoteTable(data: QuoteEmailData): string {
     ["Insurance", safeStr(data.needs_insurance)],
     ["Insurance value", safeStr(data.insurance_value)],
     ["Timestamp", safeStr(data.timestamp)],
-  ].filter(([, v]) => v.trim().length > 0);
+  ].filter((row): row is [string, string] => row[1].trim().length > 0);
 
   return `
     <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
@@ -71,33 +71,55 @@ function renderQuoteTable(data: QuoteEmailData): string {
   `;
 }
 
+/** Inbox that receives all inquiries and reply-to (not necessarily the same as RESEND_FROM). */
+function inquiryInbox(): string {
+  return process.env.ADMIN_EMAIL || "e.gonzalez@expedicargo.com";
+}
+
 function customerEmailHtml(data: QuoteEmailData): { subject: string; html: string } {
+  const contact = inquiryInbox();
   const isSpanish = !data.language || data.language === "es";
-  const subject = isSpanish ? "¡Cotización recibida! (Expedicargo)" : "Quote received! (Expedicargo)";
-  const greeting = isSpanish ? `Hola ${safeStr(data.contact_name) || ""},` : `Hello ${safeStr(data.contact_name) || ""},`;
+  const qid = safeStr(data.quote_id);
+  const subject = qid
+    ? `Cotización Recibida / Quote Received - Expedicargo #${qid}`
+    : "Cotización Recibida / Quote Received - Expedicargo";
+
+  const greeting = isSpanish
+    ? `Estimado/a ${safeStr(data.contact_name) || "cliente"},`
+    : `Dear ${safeStr(data.contact_name) || "customer"},`;
   const intro = isSpanish
     ? "Gracias por solicitar una cotización con Expedicargo. Hemos recibido tu solicitud y nuestro equipo la está revisando."
-    : "Thanks for requesting a quote with Expedicargo. We received your request and our team is reviewing it.";
+    : "Thank you for requesting a quote with Expedicargo. We have received your request and our team is reviewing it.";
 
   const next = isSpanish
-    ? "Te contactaremos dentro de 24–48 horas con una cotización detallada."
-    : "We’ll reach out within 24–48 hours with a detailed quote.";
+    ? "Nuestro equipo revisará tu solicitud y te contactará dentro de 24–48 horas con una cotización detallada."
+    : "Our team will review your request and contact you within 24–48 hours with a detailed quote.";
+
+  const urgentEs = "Para consultas o preguntas urgentes, escríbanos a";
+  const urgentEn = "For questions or urgent inquiries, please email";
 
   return {
     subject,
     html: `
       <div style="background:#f3f4f6; padding:24px;">
         <div style="max-width:640px; margin:0 auto; background:#ffffff; border-radius:10px; overflow:hidden; border:1px solid #e5e7eb;">
-          <div style="padding:20px 24px; background:linear-gradient(135deg,#1e40af,#3b82f6); color:#fff;">
+          <div style="padding:20px 24px; background:linear-gradient(135deg,#1e40af,#6366f1); color:#fff;">
             <div style="font-size:22px; font-weight:800;">Expedicargo</div>
-            <div style="opacity:.9; margin-top:6px;">${subject}</div>
+            <div style="opacity:.95; margin-top:8px; font-size:15px;">Cotización Recibida / Quote Received Successfully</div>
           </div>
           <div style="padding:24px;">
             <p style="margin:0 0 12px 0; color:#111827;">${greeting}</p>
             <p style="margin:0 0 16px 0; color:#374151; line-height:1.5;">${intro}</p>
+            <p style="margin:0 0 18px 0; font-size:13px; color:#374151;">${urgentEs} / ${urgentEn}:<br/>
+              <a href="mailto:${contact}" style="color:#2563eb; font-weight:600;">${contact}</a>
+            </p>
             ${renderQuoteTable(data)}
             <p style="margin:16px 0 0 0; color:#374151; line-height:1.5;">${next}</p>
-            <p style="margin:16px 0 0 0; color:#6b7280; font-size:12px;">info@expedicargo.com</p>
+            <p style="margin:20px 0 0 0; color:#9ca3af; font-size:12px; line-height:1.5;">
+              Este mensaje es automático; todas las consultas deben dirigirse al correo indicado arriba.<br/>
+              This is an automated message — please direct all inquiries to the email above.
+            </p>
+            <p style="margin:12px 0 0 0; color:#6b7280; font-size:12px;">Expedicargo INC</p>
           </div>
         </div>
       </div>
@@ -145,7 +167,7 @@ async function resendSend(params: { to: string; subject: string; html: string; r
 }
 
 export async function sendQuoteEmails(data: QuoteEmailData) {
-  const adminTo = process.env.ADMIN_EMAIL || "e.gonzalez@expedicargo.com";
+  const adminTo = inquiryInbox();
   const customerTo = safeStr(data.email);
   if (!customerTo) throw new Error("Missing customer email");
 
@@ -153,7 +175,12 @@ export async function sendQuoteEmails(data: QuoteEmailData) {
   const admin = adminEmailHtml(data);
 
   const [customerRes, adminRes] = await Promise.allSettled([
-    resendSend({ to: customerTo, subject: customer.subject, html: customer.html, replyTo: "info@expedicargo.com" }),
+    resendSend({
+      to: customerTo,
+      subject: customer.subject,
+      html: customer.html,
+      replyTo: process.env.RESEND_REPLY_TO || inquiryInbox(),
+    }),
     resendSend({ to: adminTo, subject: admin.subject, html: admin.html }),
   ]);
 

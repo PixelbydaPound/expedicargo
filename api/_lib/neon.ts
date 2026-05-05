@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { neon } from "@neondatabase/serverless";
 
 function requireEnv(name: string): string {
   const v = process.env[name];
@@ -6,16 +6,12 @@ function requireEnv(name: string): string {
   return v;
 }
 
-let pool: Pool | null = null;
+let sql: ReturnType<typeof neon> | null = null;
 
-export function getPool() {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: requireEnv("DATABASE_URL"),
-      ssl: { rejectUnauthorized: false },
-      max: 5,
-    });
+/** Neon HTTP driver — fits Vercel serverless better than TCP `pg.Pool`. Use Neon’s pooled connection string in env. */
+export function getSql() {
+  if (!sql) {
+    sql = neon(requireEnv("DATABASE_URL"));
   }
-  return pool;
+  return sql;
 }
-

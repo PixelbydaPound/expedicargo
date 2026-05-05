@@ -1,4 +1,4 @@
-import { getPool } from "../_lib/neon";
+import { getSql } from "../_lib/neon";
 import { sendQuoteEmails } from "../_lib/resend";
 
 function json(res: any, status: number, body: any) {
@@ -12,11 +12,11 @@ function pickQuoteId(body: any): string {
 
 export default async function handler(req: any, res: any) {
   try {
-    const pool = getPool();
+    const sql = getSql();
     if (req.method === "GET") {
-      const { rows } = await pool.query(
-        "select id, created_at, data from quotes order by created_at desc limit 200"
-      );
+      const rows = await sql`
+        select id, created_at, data from quotes order by created_at desc limit 200
+      `;
       json(res, 200, { status: "ok", data: rows });
       return;
     }
@@ -30,19 +30,30 @@ export default async function handler(req: any, res: any) {
     const quote_id = pickQuoteId(body);
 
     const payload = JSON.stringify(body);
-    const inserted = await pool.query(
-      "insert into quotes (data) values ($1::jsonb) returning id, created_at",
-      [payload]
-    );
-    const row = inserted.rows[0];
+    const insertedRows = await sql`
+      insert into quotes (data) values (${payload}::jsonb)
+      returning id, created_at
+    `;
+    const row = insertedRows[0];
 
-    // fire-and-forget emails
-    sendQuoteEmails({ ...body, quote_id }).catch((err) => {
+    // Must await: Vercel freezes the function after the response is sent, so
+    // fire-and-forget Promises often never run and emails never leave Resend.
+    let email: Awaited<ReturnType<typeof sendQuoteEmails>> | null = null;
+    let email_error: string | null = null;
+    try {
+      email = await sendQuoteEmails({ ...body, quote_id });
+    } catch (err: unknown) {
+      email_error = err instanceof Error ? err.message : String(err);
       // eslint-disable-next-line no-console
-      console.error("Email send failed:", err);
-    });
+      console.error("Email send failed:", email_error);
+    }
 
-    json(res, 201, { status: "ok", data: { id: row?.id, created_at: row?.created_at, quote_id } });
+    json(res, 201, {
+      status: "ok",
+      data: { id: row?.id, created_at: row?.created_at, quote_id },
+      email,
+      ...(email_error ? { email_error } : {}),
+    });
   } catch (err: any) {
     json(res, 500, { error: err?.message || String(err) });
   }
