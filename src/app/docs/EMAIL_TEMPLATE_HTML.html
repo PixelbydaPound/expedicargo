@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%); color: white; padding: 40px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; }
+        .header p { margin: 10px 0 0 0; font-size: 18px; opacity: 0.95; }
+        .content { background: #f9fafb; padding: 30px 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .info-box { background: #eff6ff; padding: 20px; border-left: 4px solid #2563eb; margin: 20px 0; border-radius: 4px; }
+        .info-row { margin: 10px 0; }
+        .label { font-weight: bold; color: #1f2937; }
+        .value { color: #4b5563; }
+        .button { display: inline-block; padding: 14px 32px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin: 25px 0; font-weight: bold; }
+        .button:hover { background: #1d4ed8; }
+        .footer { text-align: center; padding: 30px 20px; color: #6b7280; font-size: 14px; background: #f3f4f6; }
+        .divider { border: 0; height: 1px; background: #e5e7eb; margin: 20px 0; }
+        .checkmark { font-size: 48px; color: #10b981; text-align: center; margin: 20px 0; }
+        .section-title { color: #2563eb; margin-top: 30px; margin-bottom: 15px; font-size: 18px; }
+        .insurance-highlight { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .danger-alert { background: #fee2e2; border-left: 4px solid #ef4444; padding: 15px; margin: 15px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>✅ Cotización Recibida</h1>
+            <p>Quote Received Successfully</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="card">
+                <div class="checkmark">✓</div>
+                
+                <p style="text-align: center; font-size: 18px; color: #1f2937; margin: 0 0 20px 0;">
+                    <strong>Estimado/a {{1.contact_name}},</strong><br>
+                    <strong>Dear {{1.contact_name}},</strong>
+                </p>
+                
+                <p style="text-align: center; margin-bottom: 30px;">
+                    Gracias por solicitar una cotización con <strong>Expedicargo</strong>.<br>
+                    Thank you for requesting a quote with <strong>Expedicargo</strong>.
+                </p>
+                
+                <hr class="divider">
+                
+                <h3 style="color: #2563eb; margin-top: 30px;">📦 Resumen de su Solicitud / Request Summary</h3>
+                
+                <!-- Quote ID -->
+                <div class="info-box">
+                    <div class="info-row">
+                        <span class="label">ID de Cotización / Quote ID:</span><br>
+                        <span class="value" style="font-size: 16px; font-weight: bold; color: #2563eb;">{{1.quote_id}}</span>
+                    </div>
+                </div>
+                
+                <!-- Contact Information -->
+                <h3 class="section-title">👤 Información de Contacto / Contact Information</h3>
+                <div class="info-box">
+                    <div class="info-row">
+                        <span class="label">Empresa / Company:</span><br>
+                        <span class="value">{{1.business_name}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Contacto / Contact:</span><br>
+                        <span class="value">{{1.contact_name}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Email:</span><br>
+                        <span class="value">{{1.email}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Teléfono / Phone:</span><br>
+                        <span class="value">{{1.phone}}</span>
+                    </div>
+                </div>
+                
+                <!-- Shipment Details -->
+                <h3 class="section-title">🚢 Detalles del Envío / Shipment Details</h3>
+                <div class="info-box">
+                    <div class="info-row">
+                        <span class="label">Tipo de Envío / Shipment Type:</span><br>
+                        <span class="value">{{1.shipment_type}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Origen / Origin:</span><br>
+                        <span class="value">{{1.origin}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Puerto/Aeropuerto de Salida / Departure Port/Airport:</span><br>
+                        <span class="value">{{1.port_or_airport_departure}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Destino / Destination:</span><br>
+                        <span class="value">{{1.destination}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Puerto/Aeropuerto de Llegada / Arrival Port/Airport:</span><br>
+                        <span class="value">{{1.port_or_airport_arrival}}</span>
+                    </div>
+                </div>
+                
+                <!-- Cargo Details -->
+                <h3 class="section-title">📦 Detalles de la Carga / Cargo Details</h3>
+                <div class="info-box">
+                    <div class="info-row">
+                        <span class="label">Tipo de Carga / Cargo Type:</span><br>
+                        <span class="value">{{1.cargo_type}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Descripción de Mercancía / Merchandise Description:</span><br>
+                        <span class="value">{{1.merchandise_description}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Tipo de Empaque / Packaging Type:</span><br>
+                        <span class="value">{{1.packaging_type}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Cantidad / Quantity:</span><br>
+                        <span class="value">{{1.quantity}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Dimensiones / Dimensions:</span><br>
+                        <span class="value">{{1.dimensions}}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="label">Peso / Weight:</span><br>
+                        <span class="value">{{1.weight}}</span>
+                    </div>
+                </div>
+                
+                <!-- Dangerous Goods Alert (Conditional) -->
+                <!-- Note: In Make.com, you'll need to add a filter/router to show this only when is_dangerous = "Yes" -->
+                <div class="danger-alert" style="display: {{1.is_dangerous}};">
+                    <strong>⚠️ MERCANCÍA PELIGROSA / DANGEROUS GOODS</strong><br>
+                    <span style="font-size: 14px;">
+                        Este envío contiene mercancía peligrosa y requiere documentación especial.<br>
+                        This shipment contains dangerous goods and requires special documentation.
+                    </span>
+                </div>
+                
+                <!-- Insurance Information (Conditional) -->
+                <!-- Note: In Make.com, you'll need to add a filter/router to show this only when needs_insurance = "Yes" -->
+                <div class="insurance-highlight" style="display: {{1.needs_insurance}};">
+                    <h4 style="margin: 0 0 10px 0; color: #92400e;">
+                        🛡️ Seguro de Carga Solicitado / Cargo Insurance Requested
+                    </h4>
+                    <div class="info-row">
+                        <span class="label">Valor Asegurado / Insured Value:</span><br>
+                        <span class="value" style="font-size: 18px; font-weight: bold; color: #92400e;">
+                            ${{1.insurance_value}} USD
+                        </span>
+                    </div>
+                    <p style="margin: 10px 0 0 0; font-size: 13px; color: #78350f;">
+                        Incluiremos la cotización del seguro en nuestra propuesta.<br>
+                        We will include the insurance quote in our proposal.
+                    </p>
+                </div>
+                
+                <h3 style="color: #2563eb;">⏱️ Próximos Pasos / Next Steps</h3>
+                
+                <ul style="color: #4b5563; line-height: 1.8;">
+                    <li>Nuestro equipo está revisando su solicitud / Our team is reviewing your request</li>
+                    <li><strong>Responderemos en 24-48 horas</strong> / <strong>We will respond within 24-48 hours</strong></li>
+                    <li>Recibirá una cotización detallada por email / You will receive a detailed quote by email</li>
+                    <li>Un ejecutivo de Expedicargo se comunicará con usted / An Expedicargo representative will contact you</li>
+                </ul>
+                
+                <hr class="divider">
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <p style="margin-bottom: 15px;">
+                        <strong>¿Necesita hablar con un experto ahora?</strong><br>
+                        <strong>Need to speak with an expert now?</strong>
+                    </p>
+                    <a href="https://calendly.com/e-gonzalez-expedicargo/30min" class="button">
+                        📅 Agendar Consulta Gratuita / Book Free Consultation
+                    </a>
+                </div>
+                
+                <hr class="divider">
+                
+                <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+                    Si tiene alguna pregunta urgente, puede contactarnos:<br>
+                    If you have any urgent questions, you can contact us:
+                </p>
+                
+                <p style="text-align: center; margin: 20px 0;">
+                    📧 <a href="mailto:e.gonzalez@expedicargo.com" style="color: #2563eb;">e.gonzalez@expedicargo.com</a>
+                </p>
+                
+                <p style="color: #9ca3af; font-size: 13px; text-align: center; margin-top: 30px; font-style: italic;">
+                    Fecha de solicitud / Request date: {{1.timestamp}}<br>
+                    Referencia / Reference: {{1.quote_id}}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p style="margin: 0 0 10px 0;">
+                <strong>Expedicargo</strong><br>
+                Logística Inteligente sin Complicaciones<br>
+                Smart Logistics Without Complications
+            </p>
+            
+            <p style="margin: 15px 0;">
+                <a href="https://www.instagram.com/expedicargo?igsh=MTFsMWVxZm4wbDRqYw%3D%3D&utm_source=qr" 
+                   style="color: #2563eb; text-decoration: none;">
+                    📸 Síguenos en Instagram / Follow us on Instagram
+                </a>
+            </p>
+            
+            <p style="font-size: 12px; color: #9ca3af; margin-top: 20px;">
+                Este es un correo automático, por favor no responder directamente.<br>
+                This is an automated email, please do not reply directly.<br>
+                Para consultas, use: <a href="mailto:e.gonzalez@expedicargo.com" style="color: #2563eb;">e.gonzalez@expedicargo.com</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
