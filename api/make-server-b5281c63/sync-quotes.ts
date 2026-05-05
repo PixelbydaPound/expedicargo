@@ -1,4 +1,4 @@
-import { getSql } from "../_lib/neon";
+import { getSql } from "../_lib/neon.js";
 
 function json(res: any, status: number, body: any) {
   res.status(status).setHeader("Content-Type", "application/json").end(JSON.stringify(body));

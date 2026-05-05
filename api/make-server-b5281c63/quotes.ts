@@ -1,5 +1,5 @@
-import { getSql } from "../_lib/neon";
-import { sendQuoteEmails } from "../_lib/resend";
+import { getSql } from "../_lib/neon.js";
+import { sendQuoteEmails } from "../_lib/resend.js";
 
 function json(res: any, status: number, body: unknown) {
   try {

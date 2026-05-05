@@ -1,4 +1,4 @@
-import { sendQuoteEmails } from "../_lib/resend";
+import { sendQuoteEmails } from "../_lib/resend.js";
 
 function json(res: any, status: number, body: any) {
   res.status(status).setHeader("Content-Type", "application/json").end(JSON.stringify(body));
