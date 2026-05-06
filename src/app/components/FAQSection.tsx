@@ -56,7 +56,7 @@ export function FAQSection() {
         "How can I track my shipment?"
       ),
       answer: t(
-        "Una vez que tu envío está en tránsito, recibirás un número de rastreo que te permitirá monitorear el progreso en tiempo real. Puedes rastrear tu envío a través de nuestro portal web o contactarnos directamente para actualizaciones.",
+        "No tienes que hacerlo. Después de confirmar tu envío, nuestro equipo de logística rastrea cada etapa por ti y te envía actualizaciones a medida que avanza. Si deseas una actualización entre hitos, solo contáctanos y te compartimos el estado más reciente.",
         "You don't have to. After confirming your shipment, our logistics team tracks every stage for you and sends updates as your shipment moves. If you'd like an update between milestones, just contact us and we'll pull the latest status."
       )
     }
