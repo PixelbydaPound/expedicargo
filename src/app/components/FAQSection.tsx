@@ -57,7 +57,7 @@ export function FAQSection() {
       ),
       answer: t(
         "Una vez que tu envío está en tránsito, recibirás un número de rastreo que te permitirá monitorear el progreso en tiempo real. Puedes rastrear tu envío a través de nuestro portal web o contactarnos directamente para actualizaciones.",
-        "Once your shipment is in transit, you will receive a tracking number that allows you to monitor progress in real-time. You can track your shipment through our web portal or contact us directly for updates."
+        "You don't have to. After confirming your shipment, our logistics team tracks every stage for you and sends updates as your shipment moves. If you'd like an update between milestones, just contact us and we'll pull the latest status."
       )
     }
   ];
